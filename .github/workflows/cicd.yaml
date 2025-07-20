@@ -11,8 +11,8 @@ jobs:
     env:
       DOCKER_REPO: ${{ vars.DOCKER_REPO }}
       DOCKER_URI: ${{ vars.DOCKER_URI }}
-      AWS_REGION: us-east-1           # Replace with your actual region
-      CLUSTER_NAME: my-eks-cluster    # Replace with your actual EKS cluster name
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      CLUSTER_NAME: <your-eks-cluster>
 
     steps:
       - name: Checkout code
@@ -32,12 +32,12 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t ${{ vars.DOCKERHUB_USERNAME }}/app:1.0 .
+        run: docker build -t ${{ vars.DOCKERHUB_USERNAME }}/app.py:1.0 .
 
       - name: Push Docker image
-        run: docker push ${{ vars.DOCKERHUB_USERNAME }}/app:1.0
+        run: docker push ${{ vars.DOCKERHUB_USERNAME }}/app.py:1.0
 
-      - name: Update kubeconfig
+      - name: Update Kubeconfig
         run: |
           aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
 
