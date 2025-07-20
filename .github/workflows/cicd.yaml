@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DOCKER_REPO: ${{ env.DOCKER_REPO }}
-      DOCKER_URI: ${{ env.DOCKER_URI }}
-      AWS_REGION: ${{ env.AWS_REGION }}
-      CLUSTER_NAME: <your-eks-cluster>
+      DOCKER_REPO: ${{ vars.DOCKER_REPO }}
+      DOCKER_URI: ${{ vars.DOCKER_URI }}
+      AWS_REGION: us-east-1           # Replace with your actual region
+      CLUSTER_NAME: my-eks-cluster    # Replace with your actual EKS cluster name
 
     steps:
       - name: Checkout code
@@ -21,9 +21,9 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
-          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          aws-region: ${{env.AWS_REGION}}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -32,12 +32,12 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t ${{ vars.DOCKERHUB_USERNAME }}/app.py:1.0 .
+        run: docker build -t ${{ vars.DOCKERHUB_USERNAME }}/app:1.0 .
 
       - name: Push Docker image
-        run: docker push ${{ vars.DOCKERHUB_USERNAME }}/app.py:1.0
+        run: docker push ${{ vars.DOCKERHUB_USERNAME }}/app:1.0
 
-      - name: Update Kubeconfig
+      - name: Update kubeconfig
         run: |
           aws eks update-kubeconfig --region $AWS_REGION --name $CLUSTER_NAME
 
