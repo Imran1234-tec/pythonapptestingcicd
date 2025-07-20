@@ -1,4 +1,4 @@
-###cicd workflow for pyrhon application
+###cicd workflow for python application to github actions 
 
 name: CI/CD to AWS EKS
 
